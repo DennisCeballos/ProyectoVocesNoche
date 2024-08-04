@@ -11,6 +11,13 @@ public class ProyectoVocesNoche {
 
     private static volatile boolean running = true;
 
+    private static final int SAMPLE_RATE = 44100;
+    private static final int SAMPLE_SIZE_IN_BITS = 16;
+    private static final int CHANNELS = 1;
+    private static final boolean SIGNED = true;
+    private static final boolean BIG_ENDIAN = true;
+    private static final int BUFFER_SIZE = 1024;
+
     public static void main(String[] args) {
         // Base de codigo cooperado con chat-gpt
         
@@ -29,7 +36,7 @@ public class ProyectoVocesNoche {
 
         try {
             // Definir el formato del audio de entrada
-            AudioFormat format = new AudioFormat(44100, 16, 1, true, true);
+            AudioFormat format = new AudioFormat(SAMPLE_RATE, SAMPLE_SIZE_IN_BITS, CHANNELS, SIGNED, BIG_ENDIAN);
             DataLine.Info info = new DataLine.Info(TargetDataLine.class, format);
 
             // Comprobar que se pueda usar la entrada de audio
@@ -43,7 +50,7 @@ public class ProyectoVocesNoche {
             line.open(format);
             line.start();
 
-            byte[] buffer = new byte[1024];
+            byte[] buffer = new byte[BUFFER_SIZE];
             int bytesRead;
 
             while (running) {
@@ -53,7 +60,7 @@ public class ProyectoVocesNoche {
                 // Calcular RMS de la entrada de audio (Root Mean Square) (?)
                 double rms = 0.0;
                 for (int i = 0; i < bytesRead; i += 2) {
-                    int sample = buffer[i] | (buffer[i + 1] << 8);
+                    int sample = (buffer[i] & 0xFF) | (buffer[i + 1] << 8); // rango de 0 a 255 para buffer
                     rms += sample * sample;
                 }
                 rms = Math.sqrt(rms / (bytesRead / 2));
@@ -70,6 +77,7 @@ public class ProyectoVocesNoche {
             line.close();
         } catch (LineUnavailableException ex) {
             ex.printStackTrace();
+            Thread.currentThread().interrupt();
         }
         System.out.println("Program terminated.");
     }
