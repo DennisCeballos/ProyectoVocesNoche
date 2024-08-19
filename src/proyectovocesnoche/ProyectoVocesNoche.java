@@ -1,5 +1,8 @@
 package proyectovocesnoche;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Scanner;
 import javax.sound.sampled.*;
 
@@ -12,8 +15,22 @@ public class ProyectoVocesNoche {
     private static volatile boolean running = true;
 
     public static void main(String[] args) {
-        // Base de codigo cooperado con chat-gpt
         
+        File directory = new File("/hola/hola2");
+        
+        System.out.println(directory);
+
+        if (!directory.exists()) {
+            if (directory.mkdirs()) {
+                System.out.println("Directory created successfully.");
+            } else {
+                System.out.println("Failed to create directory.");
+            }
+        } else {
+            System.out.println("Directory already exists.");
+        }
+        // Base de codigo cooperado con chat-gpt
+        /*
         // Iniciar hilo que esperara la entrada de texto constantemente
         new Thread(() -> {
             // Lectura de entrada de texto, esperando la tecla "q"
@@ -62,7 +79,7 @@ public class ProyectoVocesNoche {
                 double db = 20 * Math.log10(rms);
 
                 // Imprimir el nivel del audio
-                System.out.println("Volume: " + db + " dB");
+                System.out.println("probandoVolume: " + db + " dB");
             }
 
             // Cerrar la linea de entrada
@@ -72,6 +89,7 @@ public class ProyectoVocesNoche {
             ex.printStackTrace();
         }
         System.out.println("Program terminated.");
+        */
     }
 
 }
